@@ -32,7 +32,7 @@ public class Car {
     public Car() {
     }
 
-    public Car(String regNumber, String model, String mark, String colour, CarCondition carCondition, BigDecimal pricePerDayOfRent) {
+    public Car(String regNumber, String mark,String model, String colour, CarCondition carCondition, BigDecimal pricePerDayOfRent) {
         this.regNumber = regNumber;
         this.model = model;
         this.mark = mark;
