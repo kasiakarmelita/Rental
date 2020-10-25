@@ -31,9 +31,17 @@ public class CarDao extends AbstractDao<Car> {
         Transaction transaction = session.beginTransaction();
         CarDao carDao = new CarDao();
         Car car = carDao.findCarByRegNumber(regNumber);
-        session.remove(car);
-        transaction.commit();
+        if (car != null) {
+            session.remove(car);
+            System.out.println("Rekord został usunięty");
+            transaction.commit();
+
+        } else {
+            System.out.println("Nie istnieje samochód o numerze rejestracyjnym: " + regNumber);
+        }
+
         session.close();
+
     }
 
     public void updateCarCondition(String regNumber, boolean isDamaged) {
@@ -56,7 +64,7 @@ public class CarDao extends AbstractDao<Car> {
         session.close();
     }
 
-//
+
 
 }
 

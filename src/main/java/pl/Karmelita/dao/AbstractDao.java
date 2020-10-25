@@ -22,6 +22,7 @@ public abstract class AbstractDao <T> {
 
         transaction.commit();
         session.close();
+        System.out.println("Rekord został dodany.");
 
     }
 
@@ -41,11 +42,13 @@ public abstract class AbstractDao <T> {
         T record = session.find(clazz,id);
         if (record != null) {
             session.remove(record);
+            System.out.println("Rekord został usunięty");
         }
         else {
             System.out.println("Brak w bazie rekordu o id: " + id);
         }
         transaction.commit();
         session.close();
+
     }
 }

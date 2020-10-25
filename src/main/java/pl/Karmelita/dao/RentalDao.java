@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RentalDao extends AbstractDao<Rental> {
 
@@ -81,69 +80,45 @@ public class RentalDao extends AbstractDao<Rental> {
 
     }
 
+    public List<Rental> findActiveRentalByCustomerId(int id) {
+        Session session = SessionProvider.getSession();
+        List<Rental> list = session.createQuery("from Rental where customer.id=:id and dateOfRealReturn is null", Rental.class)
+                .setParameter("id", id)
+                .list();
+        session.close();
+        return list;
+
+    }
+
     public List<Rental> findAciveRental() {
         Session session = SessionProvider.getSession();
-        List<Rental> list = session.createQuery("from Rental", Rental.class)
+        List<Rental> list = session.createQuery("from Rental where dateOfRealReturn is null", Rental.class)
                 .list();
 
-
-        List<Rental> records = list.stream()
-                .filter(columns -> {
-                    boolean result = columns.getDateOfRealReturn() == null;
-                    return result;
-                }).map(columns -> {
-                    int id = columns.getId();
-                    return findById(id);
-                }).collect(Collectors.toList());
-
-
         session.close();
-        return records;
+        return list;
 
     }
 
 
-    public List<Rental> findAciveRentalByCarRegNumber(String regNumber) {
+    public Rental findAciveRentalByCarRegNumber(String regNumber) {
         Session session = SessionProvider.getSession();
-        List<Rental> list = session.createQuery("from Rental where car.regNumber=:regNumber", Rental.class)
-                .setParameter("regNumber", regNumber)
-                .list();
-
-
-        List<Rental> records = list.stream()
-                .filter(columns -> {
-                    boolean result = columns.getDateOfRealReturn() == null;
-                    return result;
-                }).map(columns -> {
-                    int id = columns.getId();
-                    return findById(id);
-                }).collect(Collectors.toList());
+        Rental rent = session.createQuery("from Rental where car.regNumber=:regNumber and dateOfRealReturn is null", Rental.class)
+                .setParameter("regNumber", regNumber).getSingleResult();
 
 
         session.close();
-        return records;
+        return rent;
 
     }
 
     public boolean CarIsNotRented(String regNumber) {
         Session session = SessionProvider.getSession();
-        List<Rental> list = session.createQuery("from Rental where car.regNumber=:regNumber", Rental.class)
+        List<Rental> list = session.createQuery("from Rental where car.regNumber=:regNumber and dateOfRealReturn is null", Rental.class)
                 .setParameter("regNumber", regNumber)
                 .list();
-
-
-        List<Rental> records = list.stream()
-                .filter(columns -> {
-                    boolean result = columns.getDateOfRealReturn() == null;
-                    return result;
-                }).map(columns -> {
-                    int id = columns.getId();
-                    return findById(id);
-                }).collect(Collectors.toList());
-
-
         session.close();
-        return records.isEmpty();
+        return list.isEmpty();
 
     }
 
